@@ -3,14 +3,32 @@ using System.Collections;
 
 public class Paddle : MonoBehaviour {
 
-	private float mousePosInBlock;
+	public bool autoPlay = false;
+	private Ball ball;
+	public float minX = 0.5f;
+	public float maxX = 15.5f;
 
 	void Start() {
-
+		ball = GameObject.FindObjectOfType<Ball> ();
 	}
 
 	void Update(){
-		mousePosInBlock = Input.mousePosition.x / Screen.width * 16;
-		this.transform.position = new Vector3(Mathf.Clamp(mousePosInBlock, 0.5f, 15.5f), this.transform.position.y, this.transform.position.z);
+		if (!autoPlay) {
+			MoveWithMouse ();
+		} else {
+			AutoPlay();
+		}
+	}
+
+	void AutoPlay() {
+		Vector3 paddlePos = this.transform.position;
+		Vector3 ballPos = ball.transform.position;
+		paddlePos.x = Mathf.Clamp(ballPos.x, minX, maxX);
+		this.transform.position = paddlePos;
+	}
+
+	void MoveWithMouse () {
+		float mousePosInBlock = Input.mousePosition.x / Screen.width * 16;
+		this.transform.position = new Vector3(Mathf.Clamp(mousePosInBlock, minX, maxX), this.transform.position.y, this.transform.position.z);
 	}
 }
